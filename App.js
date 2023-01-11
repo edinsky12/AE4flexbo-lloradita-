@@ -19,6 +19,9 @@ const screenHeight = Dimensions.get('window').height;
 const imgWidth = screenHeight > screenWidth ? screenWidth / 4 : screenHeight / 4;
 //Declarem theme per a utilitzar temes de llibreria paper
 
+const ArtWork = () => {
+  return "https://m.media-amazon.com/images/I/61wT8fN0YoL._SL1200_.jpg"
+}
 
 export default class App extends Component {
   
@@ -26,7 +29,8 @@ export default class App extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.artWork}>
-            <View style={styles.square}><Text>Ací va una imatge</Text></View>
+          <View style={styles.square}><Text>Ací va una imatge</Text></View>
+          <Image source={{uri: ArtWork()}} style={styles.square} />
         </View>
         <View style={styles.titolCantant}></View>
         <View style={styles.controls}></View>
@@ -49,7 +53,8 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     backgroundColor: "#1DB954",
-    alignContent: 'flex-end'
+    alignContent: 'flex-end',
+    position:'absolute'
   },
   imatgePortada:{
 
@@ -58,7 +63,9 @@ const styles = StyleSheet.create({
     flex:3,
     borderColor:'blue',
     borderWidth:5,
+    alignItems: 'center',
     justifyContent: 'center',
+    
     //color: theme.colors.surface
 
   },
@@ -66,6 +73,7 @@ const styles = StyleSheet.create({
     flex:1,
     borderColor:'green',
     borderWidth:5,
+    
   },
   controls:{
     flex:2,
