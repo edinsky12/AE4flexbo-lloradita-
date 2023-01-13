@@ -21,66 +21,93 @@ const screenHeight = Dimensions.get('window').height;
 const imgWidth = screenHeight > screenWidth ? screenWidth / 4 : screenHeight / 4;
 //Declarem theme per a utilitzar temes de llibreria paper
 
-const ArtWork = () => {
 
 
 
+const ArtWork = (num) => {
 
-
-
-  return "https://m.media-amazon.com/images/I/61wT8fN0YoL._SL1200_.jpg"
+  const portades = ["",
+    "https://m.media-amazon.com/images/I/61wT8fN0YoL._SL1200_.jpg",
+    "https://m.media-amazon.com/images/I/31dlbDH9TdL.jpg",
+    "https://m.media-amazon.com/images/I/812a+ILZtaL._SS500_.jpg",
+    "https://is5-ssl.mzstatic.com/image/thumb/Music123/v4/f3/35/4b/f3354b5d-54d0-a643-d496-0a19b5c07102/8429006389384.jpg/1200x1200bf-60.jpg"]
+  var portada = portades[num]
+  return portada
 }
 
 const TitolCantant = (num) => {
-  const cantants = ["Cantant", "Beach House", "Boy Pablo", "Papooz", "Gus Dapperton"];
-  const titols = ["Grup", "Space Song", "Losing You", "Ann wants to dance", "Verdigris"]
+  const cantants = ["Cantant", "Beach House", "Boy Pablo", "Papooz", "Vera Fauna"];
+  const titols = ["Grup", "Space Song", "Everytime", "Ann wants to dance", "Los Naranjos"]
   var data = { cantant: cantants[num], titol: titols[num] };
 
   //var data = "" + cantants[num] + "-" + titols[num];
   return data
 }
 
-const Control = () => {
-
+const duracioPista = (num) => {
+  const segonsP = [0, 320, 172, 210, 284];
+  var segonsPista = segonsP[num]
+  return segonsPista
 }
-
-
 
 const App = () => {
 
+//Canviant el numero dins del useState aci es poden veure distints outputs de portada, duració i titol-cantant (0-4) la opcio 0 no conté dades
+//Tambe es pot donar dues vegades a next o previous per a navegar per els resultats.
+const [numeroCanco, setNumeroCanco] = useState(1);
 
+const canviaNumeroCanco= (opcio) => {
+  if (opcio === 'next'&& range == duracioPista(numeroCanco)){
+    setNumeroCanco(numeroCanco+1);
+    setValorSlider(0);
+    setRange(0);
+  }
+  else if (opcio ==='previous' && range == '0'){
+    setNumeroCanco(numeroCanco-1)
+    setValorSlider(0);
+    setRange(0);
+  }
+  if (numeroCanco>4){
+    setNumeroCanco(0)
+  }
+  if (numeroCanco<0){
+    setNumeroCanco(5)
+  }
+}
 
   const theme = useTheme();
+  const colorDefecte = theme.colors.inverseSurface
+  const colorSeleccionat = theme.colors.surface
 
   //Botons TitolCantant
   const [iconaFav, setIconaFav] = useState('heart');
-  const [colorIconaFav, setColorIconaFav] = useState('grey');
+  const [colorIconaFav, setColorIconaFav] = useState(colorDefecte);
   const [iconaStar, setIconaStar] = useState('star-outline');
-  const [colorIconaStar, setColorIconaStar] = useState('grey');
+  const [colorIconaStar, setColorIconaStar] = useState(colorDefecte);
 
   const canviaIconaBluetooth = () => {
-    if (colorIconaBluetooth === 'grey') {
-      setColorIconaBluetooth('white')
+    if (colorIconaBluetooth === colorDefecte) {
+      setColorIconaBluetooth(colorSeleccionat)
     }
-    else { setColorIconaBluetooth('grey') }
+    else { setColorIconaBluetooth(colorDefecte) }
   }
 
   const canviaIconaShuffle = () => {
-    if (colorIconaShuffle === 'grey') {
-      setColorIconaShuffle('white')
+    if (colorIconaShuffle === colorDefecte) {
+      setColorIconaShuffle(colorSeleccionat)
     }
-    else { setColorIconaShuffle('grey') }
+    else { setColorIconaShuffle(colorDefecte) }
   }
 
   //botons Controls
   const [iconaBluetooth] = useState('bluetooth');
-  const [colorIconaBluetooth, setColorIconaBluetooth] = useState('grey');
+  const [colorIconaBluetooth, setColorIconaBluetooth] = useState(colorDefecte);
   const [iconaShuffle] = useState('shuffle-variant');
-  const [colorIconaShuffle, setColorIconaShuffle] = useState('grey');
+  const [colorIconaShuffle, setColorIconaShuffle] = useState(colorDefecte);
   const [iconaPlayPause, setIconaPlayPause] = useState('play');
   const [range, setRange] = useState('0%');
   const [valorSlider, setValorSlider] = useState(0);
-  const duracioPista = 1000;
+
 
 
   const canviaIconaFav = () => {
@@ -88,12 +115,22 @@ const App = () => {
       setIconaFav('cards-heart')
       setColorIconaFav('green')
     }
-    else { setIconaFav('heart'); setColorIconaFav('grey') }
+    else { setIconaFav('heart'); setColorIconaFav(colorDefecte) }
   }
 
   const canviaPosicioSlider = (valor) => {
     setValorSlider(valor);
     setRange(valor);
+    if (valor === duracioPista(numeroCanco)){
+      canviaNumeroCanco('next');
+
+    }
+    else if (valor === 0){
+      canviaNumeroCanco('previous');
+    }
+    else {
+      
+    }
   }
 
 
@@ -139,19 +176,18 @@ const App = () => {
     return time
   }
 
+  
 
 
 
-
-
-  const { titol, cantant } = TitolCantant(1);
+  const { titol, cantant } = TitolCantant(numeroCanco);
   // És igual que la linea anterior const titol = TitolCantant(1).titol;
 
   return (
     <View style={styles.container}>
       <View style={styles.artWork}>
         <View style={styles.square}><Text>Ací va una imatge</Text></View>
-        <Image source={{ uri: ArtWork() }} style={styles.imatgePortada} />
+        <Image source={{ uri: ArtWork(numeroCanco) }} style={styles.imatgePortada} />
       </View>
       <View style={styles.titolCantant}>
         <View>
@@ -184,7 +220,7 @@ const App = () => {
           <Slider
             style={{ width: screenWidth * 0.90, height: 40 }}
             minimumValue={0}
-            maximumValue={duracioPista}
+            maximumValue={duracioPista(numeroCanco)}
             minimumTrackTintColor="green"
             maximumTrackTintColor="grey"
             value={valorSlider}
@@ -194,7 +230,7 @@ const App = () => {
         </View>
         <View style={styles.duracio}>
           <Text style={styles.textDuracio}>{"" + conversorTemps(range).hh + conversorTemps(range).mm + conversorTemps(range).ss}</Text>
-          <Text style={styles.textDuracio}>{"" + conversorTemps(duracioPista).hh + conversorTemps(duracioPista).mm + conversorTemps(duracioPista).ss}</Text>
+          <Text style={styles.textDuracio}>{"" + conversorTemps(duracioPista(numeroCanco)).hh + conversorTemps(duracioPista(numeroCanco)).mm + conversorTemps(duracioPista(numeroCanco)).ss}</Text>
         </View>
         <View style={styles.controlButtons}>
           <IconButton
@@ -210,7 +246,7 @@ const App = () => {
             size={50}
             animated={false}
             icon={'skip-previous'}
-            iconColor={'grey'}
+            iconColor={colorSeleccionat}
             onPress={valorSlider => canviaPosicioSlider(0)}
           />
           <IconButton
@@ -218,7 +254,7 @@ const App = () => {
             size={70}
             animated={false}
             icon={iconaPlayPause}
-            iconColor={'grey'}
+            iconColor={colorSeleccionat}
             onPress={canviaIconaPlayPause}
           />
           <IconButton
@@ -226,8 +262,8 @@ const App = () => {
             size={50}
             animated={false}
             icon={'skip-next'}
-            iconColor={'grey'}
-            onPress={valorSlider => canviaPosicioSlider(duracioPista)}
+            iconColor={colorSeleccionat}
+            onPress={valorSlider => canviaPosicioSlider(duracioPista(numeroCanco))}
           />
           <IconButton
             style={{ width: 90, height: 90, }}
